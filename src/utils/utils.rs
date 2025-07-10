@@ -1,5 +1,5 @@
 use configparser::ini::Ini;
-use std::{fs, path::PathBuf};
+use std::{env, fs, path::PathBuf};
 
 pub fn run() {
     println!("Hello, world!");
@@ -104,4 +104,36 @@ pub fn repo_default_config() -> Ini {
     conf.set("core", "filemode", Some("false".to_string()));
     conf.set("core", "bare", Some("false".to_string()));
     conf
+}
+
+pub fn repo_find(
+    path: Option<&PathBuf>,
+    required: Option<bool>,
+) -> Result<Option<GitRepository>, String> {
+    let required_bool = required.unwrap_or(true);
+
+    let mut path_buf = match path {
+        Some(x) => x
+            .clone()
+            .canonicalize()
+            .map_err(|e| format!("Invalid path: {}", e))?,
+        None => {
+            env::current_dir().map_err(|e| format!("Failed to get current directory: {}", e))?
+        }
+    };
+
+    loop {
+        if path_buf.parent().is_none() {
+            if required_bool {
+                return Err(String::from("No Repository found"));
+            } else {
+                return Ok(None);
+            }
+        }
+        if path_buf.join(".git").exists() {
+            return Ok(Some(GitRepository::new(path_buf, false)?));
+        } else {
+            path_buf.pop();
+        }
+    }
 }
