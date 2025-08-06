@@ -1,4 +1,8 @@
-use crate::utils::utils::{GitRepository, build_dir, build_file, repo_default_config};
+//import utility functions
+use crate::utils::{
+    file_path::{build_dir, build_file},
+    repository::{GitRepository, repo_default_config},
+};
 use std::{fs, path::PathBuf};
 
 pub fn init_repo(path: PathBuf) -> Result<GitRepository, String> {

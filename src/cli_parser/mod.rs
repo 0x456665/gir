@@ -1,7 +1,8 @@
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
+#[command(about = "A Git implementation in Rust")]
 #[command(propagate_version = true)]
 pub struct Cli {
     #[command(subcommand)]
@@ -11,11 +12,10 @@ pub struct Cli {
 #[derive(Subcommand, Debug)]
 pub enum Commands {
     ///initialize a new repository
-    Init {
-        path: Vec<String>,
-    },
+    Init(InitCommand),
     Add(AddCommand),
-    CatFile,
+    ///simply prints the raw contents of an object
+    CatFile(CatFileCommand),
     CheckIgnore,
     CheckOut,
     Commit,
@@ -38,9 +38,26 @@ pub struct InitCommand {
 }
 
 #[derive(Parser, Debug)]
+pub struct CatFileCommand {
+    #[arg(short = 't', long)]
+    /// Type of object to print
+    pub object_type: ObjectType,
+    /// Object hash or reference
+    pub object_hash_or_ref: String,
+}
+
+#[derive(Parser, Debug)]
 pub struct AddCommand {
     #[command(subcommand)]
     action: AddAction,
+}
+
+#[derive(Debug, ValueEnum, Clone)]
+pub enum ObjectType {
+    Blob,
+    Commit,
+    Tag,
+    Tree,
 }
 
 #[derive(Subcommand, Debug)]

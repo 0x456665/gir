@@ -9,6 +9,6 @@ glob = "0.3.2"
 configparser = "3.1.0"
 chrono = "0.4.41"
 sha1 = "0.10.6"
-zune-inflate = "0.2.54"
+flate2 = { version = "1.0.17", features = ["zlib-rs"], default-features = false }
 regex = "1.11.1"
 clap = { version = "4.5.40", features = ["derive"] }
