@@ -223,5 +223,34 @@ pub fn object_find(
     fmt: Option<&str>,
     follow: Option<bool>,
 ) -> Result<String, String> {
+    let _empty = (repo, name, fmt, follow);
     Ok(name.to_string())
+}
+
+// def object_hash(fd, fmt, repo=None):
+//     """ Hash object, writing it to repo if provided."""
+//     data = fd.read()
+
+//     # Choose constructor according to fmt argument
+//     match fmt:
+//         case b'commit' : obj=GitCommit(data)
+//         case b'tree'   : obj=GitTree(data)
+//         case b'tag'    : obj=GitTag(data)
+//         case b'blob'   : obj=GitBlob(data)
+//         case _: raise Exception(f"Unknown type {fmt}!")
+
+//     return object_write(obj, repo)
+
+pub fn object_hash(fd: Vec<u8>, fmt: &str, repo: Option<&GitRepository>) -> Result<String, String> {
+    let obj = match fmt {
+        "commit" => GitObject::Commit(GitCommit::new(fd)),
+        "tree" => GitObject::Tree(GitTree::new(fd)),
+        "tag" => GitObject::Tag(GitTag::new(fd)),
+        "blob" => GitObject::Blob(GitBlob::new(fd)),
+        _ => {
+            return Err(format!("Unknown type {}!", fmt));
+        }
+    };
+
+    object_write(&obj, repo)
 }

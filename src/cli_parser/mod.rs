@@ -16,10 +16,10 @@ pub enum Commands {
     Add(AddCommand),
     ///simply prints the raw contents of an object
     CatFile(CatFileCommand),
+    HashObject(HashObjectCommand),
     CheckIgnore,
     CheckOut,
     Commit,
-    HashObject,
     Log,
     LsFiles,
     LsTree,
@@ -39,11 +39,21 @@ pub struct InitCommand {
 
 #[derive(Parser, Debug)]
 pub struct CatFileCommand {
-    #[arg(short = 't', long)]
     /// Type of object to print
     pub object_type: ObjectType,
     /// Object hash or reference
     pub object_hash_or_ref: String,
+}
+
+#[derive(Parser, Debug)]
+pub struct HashObjectCommand {
+    /// Type of object to hash
+    pub object_type: ObjectType,
+    /// Actually write the object into the object database
+    #[arg(short, short('w'), long)]
+    pub write: bool,
+    /// Object contents
+    pub path: String,
 }
 
 #[derive(Parser, Debug)]

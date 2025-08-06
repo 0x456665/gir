@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use clap::Parser;
 // use configparser::ini::Ini;
 use gir::cat_file::cat_file;
-use gir::cli_parser::{CatFileCommand, Cli, Commands, InitCommand, ObjectType};
+use gir::cli_parser::{CatFileCommand, Cli, Commands, HashObjectCommand, InitCommand, ObjectType};
 use gir::init::init;
 
 fn main() {
@@ -30,6 +30,19 @@ fn main() {
                 cat_file(object_hash_or_ref, "tree");
             }
         },
+        Commands::HashObject(HashObjectCommand{object_type, write, path}) => {
+            let object_type = match object_type {
+                ObjectType::Blob => "blob",
+                ObjectType::Commit => "commit",
+                ObjectType::Tag => "tag",
+                ObjectType::Tree => "tree",
+            };
+            let object_type = object_type.to_string();
+            let path = path.clone();
+            println!("object_type: {object_type}");
+            println!("write: {write}");
+            println!("path: {path}");
+        }
         _ => {
             println!("Invalid Command, Check help")
         }
