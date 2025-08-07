@@ -44,7 +44,7 @@ fn main() {
             println!("path: {path}");
         }
         _ => {
-            println!("Invalid Command, Check help")
+            panic!("Invalid Command, Check help")
         }
     }
     println!("args are: {cli:?}");
